@@ -105,7 +105,7 @@
                         method="post" enctype="multipart/form-data">
                             @csrf
                             <div class="upload-btn-wrapper float-left mr-3">
-                                <button id="btn-import-csv" class="btn btn-primary" >
+                                <button id="btn-import-csv" class="btn btn-primary" {{ $partialAccess ? 'disabled' : '' }}>
                                     Import CSV</button>
                                 <input id="file_csv" type="file" name="file_csv"
                                 onchange="javascript:this.form.submit();"

@@ -26,8 +26,7 @@
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.text label="User Name" name="name" placeholder="User Name"
                              :value="$user->name"
-                                :disabled="(auth()->user()->position_id !=
-                                 UserConstant::GENERAL_DIRECTOR[0]) ? true : false"
+                                :disabled="$partialAccess"
                              />
                         </div>
                         {{-- row 2 --}}
@@ -35,30 +34,26 @@
                             <input type="hidden" id="original-email" name="original_email" value="{{ $user->email }}">
                             <x-inputs.text label="Email" name="email" placeholder="Email"
                              :value="$user->email"
-                             :disabled="(auth()->user()->position_id !=
-                                 UserConstant::GENERAL_DIRECTOR[0]) ? true : false"
+                             :disabled="$partialAccess"
                              />
                         </div>
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.label-select label="Division" name="division_id"
                              :options="$divisions" :value="$user->division_id"
-                             :disabled="(auth()->user()->position_id !=
-                                 UserConstant::GENERAL_DIRECTOR[0]) ? true : false"
+                             :disabled="$partialAccess"
                              />
                         </div>
                         {{-- row 3 --}}
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.text label="Entered Date" name="entered_date" placeholder="Entered Date"
                             :value="date('Y/m/d', strtotime($user->entered_date))"
-                            :disabled="(auth()->user()->position_id !=
-                                 UserConstant::GENERAL_DIRECTOR[0]) ? true : false"
+                            :disabled="$partialAccess"
                              />
                         </div>
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.label-select label="Position" name="position_id"
                              :options="UserConstant::ROLE" :value="$user->position_id"
-                             :disabled="(auth()->user()->position_id !=
-                                 UserConstant::GENERAL_DIRECTOR[0]) ? true : false"
+                             :disabled="$partialAccess"
                              />
                         </div>
                         {{-- row 4 --}}
@@ -73,10 +68,10 @@
 
                         <div class="col-md-12 col-lg-12 my-3" role="group" aria-label="Button group">
                             <button type="submit" class="btn btn-success d-none" value="Register">Register</button>
-                            <button type="submit" class="btn btn-primary mr-2 " value="Update">Update</button>
+                            <button type="submit" class="btn btn-primary mr-2 " value="Update" {{ $partialAccess ? 'disabled' : '' }}>Update</button>
                             <button id="delete-btn" type="button" class="btn btn-danger mx-2"
-                             value="Delete">Delete</button>
-                            <a type="button" href="{{ route('user.index') }}" class="btn btn-secondary">Cancel</a>
+                             value="Delete" {{ $partialAccess ? 'disabled' : '' }}>Delete</button>
+                            <a type="button" href="{{ route('user.index') }}" class="btn btn-secondary" {{ $partialAccess ? 'disabled' : '' }}>Cancel</a>
                         </div>
                     </div>
                 </form>

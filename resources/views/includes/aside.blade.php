@@ -7,18 +7,13 @@
             <span>User List</span>
         </a>
     </li><!-- End User List Nav -->
-    <li class="nav-item {{ request()->is('division*') ? 'active' : '' }}">
-        @if (auth()->user()->position_id == UserConstant::GENERAL_DIRECTOR[0])
+    @if (!$partialAccess)
+        <li class="nav-item {{ request()->is('division*') ? 'active' : '' }}">
             <a class="nav-link" href="{{ route('division.index') }}">
                 <span>Division List</span>
             </a>
-        {{-- @else
-            <label class="nav-link text-secondary">
-                <span>Division List</span>
-            </label> --}}
-        @endif
-
-    </li><!-- End Dashboard Nav -->
+        </li><!-- End Division List Nav -->
+    @endif
 
     {{-- <li class="nav-item">
     <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">

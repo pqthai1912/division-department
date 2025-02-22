@@ -17,7 +17,8 @@ class checkPosition0
      */
     public function handle(Request $request, Closure $next)
     {
-        if (auth()->user()->position_id != UserConstant::GENERAL_DIRECTOR[0]) {
+        $partialAccess = $request->attributes->get('partial_access', false);
+        if ($partialAccess) {
             // logout and redirect to login
             auth()->logout();
             return redirect()->route('login');

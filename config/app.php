@@ -216,6 +216,7 @@ return [
 
     // define title of screen from route
     'routes_description' => [
+        'login' => 'Login',
         'user.index' => 'User List',
         'user.index.search' => 'User List',
         'user.export' => 'User List',

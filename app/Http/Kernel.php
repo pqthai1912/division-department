@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'clearSessionSearch' => ClearSessionSearch::class,
         'checkPosition0' => checkPosition0::class,
+        'access.control' => \App\Http\Middleware\AccessControlMiddleware::class,
     ];
 }

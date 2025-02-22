@@ -75,7 +75,7 @@
                             <tbody>
                                 @forelse ($users as $user)
                                     <tr>
-                                        @if (auth()->user()->position_id == UserConstant::GENERAL_DIRECTOR[0])
+                                        @if(!$partialAccess)
                                             <th scope="row">
                                                 <a href="{{route('user.edit', $user->id) }}">
                                                     {{ $user->name }}
@@ -101,37 +101,29 @@
                         </table>
                         <!-- End Bordered Table -->
                         {{-- Just GENERAL_DIRECTOR --}}
-                        @if (auth()->user()->position_id == UserConstant::GENERAL_DIRECTOR[0])
                             <div class="form-group">
-                                <a href="{{ route('user.create') }}">
-                                    <button class="btn btn-success custom-btn">
-                                        Add New
-                                    </button>
+                                <a href="{{ !$partialAccess ? route('user.create') : '#' }}" class="btn btn-success custom-btn {{ $partialAccess ? 'disabled' : '' }}">
+                                    Add New
                                 </a>
                                 &nbsp;&nbsp;&nbsp;
                                 {{-- check users have a least 1 record --}}
-                            @if ($users->count() > 0)
-                                <button id="csv" class="btn btn-secondary custom-btn">
-                                    <a href="{{ url('/export') }}" class="text-white">
-                                        Output CSV
+                                @if ($users->count() > 0)
+                                    <button id="csv" class="btn btn-secondary custom-btn" {{ $partialAccess ? 'disabled' : '' }}>
+                                        <a href="{{ url('/export') }}" class="text-white">
+                                            Output CSV
 
-                                    </a>
-                                </button>
-                            @endif
-
+                                        </a>
+                                    </button>
+                                @endif
+                        {{-- alert('{{ App\Utils\MessagesUtil::getMessage('ECL046', [$users->count()]) }}'); --}}
                             </div>
-                        @endif
                     @else
                         {{-- Just GENERAL_DIRECTOR --}}
-                        @if (auth()->user()->position_id == UserConstant::GENERAL_DIRECTOR[0])
-                            <div class="form-group">
-                                <a href="{{ route('user.create') }}">
-                                    <button class="btn btn-success custom-btn">
-                                        Add New
-                                    </button>
-                                </a>
-                            </div>
-                        @endif
+                        <div class="form-group">
+                            <a href="{{ !$partialAccess ? route('user.create') : '#' }}" class="btn btn-success custom-btn {{ $partialAccess ? 'disabled' : '' }}">
+                                Add New
+                            </a>
+                        </div>
                     @endif
 
 

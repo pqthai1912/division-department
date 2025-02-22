@@ -25,42 +25,42 @@
                         </div>
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.text label="User Name" name="name"
-                             placeholder="User Name" value="{{ old('name') }}"/>
+                             placeholder="User Name" value="{{ old('name') }}" :disabled="$partialAccess"/>
                         </div>
                         {{-- row 2 --}}
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.text label="Email" name="email"
-                             placeholder="Email" value="{{ old('email') }}"/>
+                             placeholder="Email" value="{{ old('email') }}" :disabled="$partialAccess"/>
                         </div>
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.label-select label="Division" name="division_id"
-                             :options="$divisions" value="{{ old('division_id') }}" />
+                             :options="$divisions" value="{{ old('division_id') }}" :disabled="$partialAccess"/>
                         </div>
                         {{-- row 3 --}}
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.text label="Entered Date" name="entered_date"
-                             placeholder="Entered Date" value="{{ old('entered_date') }}"/>
+                             placeholder="Entered Date" value="{{ old('entered_date') }}" :disabled="$partialAccess"/>
                         </div>
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.label-select label="Position" name="position_id"
-                             :options="UserConstant::ROLE" value="{{ old('position_id') }}"/>
+                             :options="UserConstant::ROLE" value="{{ old('position_id') }}" :disabled="$partialAccess"/>
                         </div>
                         {{-- row 4 --}}
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.text label="Password" name="password" placeholder="Password"
-                             type="password" value="{{ old('password') }}"/>
+                             type="password" value="{{ old('password') }}" :disabled="$partialAccess"/>
                         </div>
                         <div class="col-md-6 col-lg-6 my-3">
                             <x-inputs.text label="Password Confirmation" name="password_confirmation"
                              placeholder="Password Confirmation" type="password"
-                             value="{{ old('password_confirmation') }}" />
+                             value="{{ old('password_confirmation') }}" :disabled="$partialAccess"/>
                         </div>
 
                         <div class="col-md-12 col-lg-12 my-3" role="group" aria-label="Button group">
-                            <button type="submit" class="btn btn-success mr-2" value="Register">Register</button>
+                            <button type="submit" class="btn btn-success mr-2" value="Register" {{ $partialAccess ? 'disabled' : '' }}>Register</button>
                             <button type="submit" class="btn btn-primary mx-2 d-none" value="Update">Update</button>
-                            <button type="button" class="btn btn-danger d-none" value="Delete">Delete</button>
-                            <a type="button" href="{{ route('user.index') }}" class="btn btn-secondary mx-2">Cancel</a>
+                            <button type="button" class="btn btn-danger d-none" value="Delete" {{ $partialAccess ? 'disabled' : '' }}>Delete</button>
+                            <a type="button" href="{{ route('user.index') }}" class="btn btn-secondary mx-2" {{ $partialAccess ? 'disabled' : '' }}>Cancel</a>
                         </div>
                     </div>
                 </form>

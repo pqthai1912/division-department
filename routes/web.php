@@ -22,7 +22,7 @@ Route::post('login', [LoginController::class,'postLogin'])->name('post.login');
 Route::post('check_email_exists', [LoginController::class, 'checkEmailExists']);
 Route::get('logout', [LoginController::class,'getLogout'])->name('logout');
 
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware(['auth', 'access.control'])->group(function () {
     // user
     Route::get('/search', [UserController::class, 'indexSearch'])->name('user.index.search');
     Route::post('/search', [UserController::class, 'search'])->name('user.search');
