@@ -10,7 +10,7 @@ services:
         uid: 1000
     restart: always
     ports:
-      - 8080:80
+      - 9090:80
     volumes:
       - "./:/var/www/html"
     environment:
