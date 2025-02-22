@@ -16,10 +16,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::get('/', function () {
-//     return view('pages.home');
-// })->name('home');
-
 // auth
 Route::get('login', [LoginController::class, 'getLogin'])->name('login');
 Route::post('login', [LoginController::class,'postLogin'])->name('post.login');
