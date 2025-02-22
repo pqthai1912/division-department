@@ -1,7 +1,6 @@
 # Stage 1: Node build stage
 FROM node:20-alpine as node
 
-
 WORKDIR /app
 COPY package*.json ./
 COPY resources ./resources
@@ -10,7 +9,6 @@ RUN npm install && npm run build
 
 # Stage 2: PHP build stage
 FROM php:8.2-apache as php-build
-
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends git unzip zip git exiftool \
@@ -23,9 +21,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Install PHP extensions
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
 RUN install-php-extensions gd pdo_mysql bcmath zip intl opcache exif mbstring
+RUN pecl install xdebug
 
 # Custom php configs
 COPY /docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+COPY /docker/xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # Set application folder as environment variable
 ENV APP_HOME /var/www/html
@@ -40,7 +40,6 @@ RUN cd $APP_HOME && composer install --no-interaction
 # Stage 3: Production stage
 FROM php:8.2-apache as production
 
-
 # Arguments defined in docker-compose.yml
 ARG user
 ARG uid
@@ -50,6 +49,9 @@ COPY --from=php-build /usr/local/lib/php/extensions /usr/local/lib/php/extension
 COPY --from=php-build /usr/local/etc/php/conf.d /usr/local/etc/php/conf.d
 # COPY --from=php-build /usr/local/bin /usr/local/bin
 
+# Enable xdebug
+RUN docker-php-ext-enable xdebug
+
 # Enable apache rewrite and SSL
 RUN a2enmod rewrite ssl
 
@@ -58,10 +60,14 @@ RUN rm /etc/apache2/sites-available/000-default.conf
 COPY /docker/sites-available/000-default.conf /etc/apache2/sites-available/
 RUN a2enmod rewrite
 
-# Create system user
+# Create an unprivileged system user
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
+
+RUN mkdir -p /var/log \
+    && touch /var/log/xdebug.log \
+    && chmod 777 /var/log/xdebug.log
 
 # Set application folder as environment variable
 ENV APP_HOME /var/www/html
