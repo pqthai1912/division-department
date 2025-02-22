@@ -4,9 +4,10 @@ namespace App\Rules;
 
 use App\Utils\JapaneseUtil;
 use App\Utils\MessagesUtil;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class HiraganaRule implements Rule
+class HiraganaRule implements ValidationRule
 {
     public $fieldName;
     /**
@@ -16,21 +17,20 @@ class HiraganaRule implements Rule
      */
     public function __construct($fieldName)
     {
-        //
         $this->fieldName = $fieldName;
     }
 
     /**
-     * Determine if the validation rule passes.
+     * Run the validation rule.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * @param string $attribute
+     * @param mixed $value
+     * @param Closure $fail
      */
-    public function passes($attribute, $value)
-    {
-        //
-        return JapaneseUtil::isHiragana($value);
+    public function validate(string $attribute, mixed $value, Closure $fail): void {
+        if (isset($value) && !JapaneseUtil::isHiragana($value)) {
+            $fail($this->message());
+        }
     }
 
     /**

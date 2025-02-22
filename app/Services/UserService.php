@@ -3,13 +3,9 @@
 namespace App\Services;
 
 use App\Constants\UserConstant;
-use App\Models\User;
-use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Str;
 
 class UserService
 {

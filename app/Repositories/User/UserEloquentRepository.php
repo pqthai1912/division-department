@@ -13,7 +13,7 @@ class UserEloquentRepository extends EloquentRepository
      */
     public function getModel()
     {
-        return \App\Models\User::class;
+        return User::class;
     }
 
     public function search(array $inputSearch)

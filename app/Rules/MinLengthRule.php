@@ -3,9 +3,10 @@
 namespace App\Rules;
 
 use App\Utils\MessagesUtil;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class MinLengthRule implements Rule
+class MinLengthRule implements ValidationRule
 {
     public $currNumber;
     public $minNumber;
@@ -17,24 +18,25 @@ class MinLengthRule implements Rule
      */
     public function __construct($minNumber, $attribute)
     {
-        //
         $this->currNumber = 0;
         $this->minNumber = $minNumber;
         $this->attribute = $attribute;
     }
 
     /**
-     * Determine if the validation rule passes.
+     * Run the validation rule.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * @param string $attribute
+     * @param mixed $value
+     * @param Closure $fail
      */
-    public function passes($attribute, $value)
-    {
-        //
-        $this->currNumber = strlen($value);
-        return $this->currNumber >= $this->minNumber;
+    public function validate(string $attribute, mixed $value, Closure $fail): void {
+        if (isset($value)) {
+            $this->currNumber = strlen($value);
+            if ($this->currNumber < $this->minNumber) {
+                $fail($this->message());
+            }
+        }
     }
 
     /**

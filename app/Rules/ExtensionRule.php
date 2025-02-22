@@ -3,11 +3,11 @@
 namespace App\Rules;
 
 use App\Utils\MessagesUtil;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class ExtensionRule implements Rule
+class ExtensionRule implements ValidationRule
 {
-
     public $extensionName;
     /**
      * Create a new rule instance.
@@ -16,21 +16,20 @@ class ExtensionRule implements Rule
      */
     public function __construct($extensionName)
     {
-        //
         $this->extensionName = $extensionName;
     }
 
     /**
-     * Determine if the validation rule passes.
+     * Run the validation rule.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * @param string $attribute
+     * @param mixed $value
+     * @param Closure $fail
      */
-    public function passes($attribute, $value)
-    {
-        //
-        return request()->file_csv->getClientOriginalExtension() == $this->extensionName;
+    public function validate(string $attribute, mixed $value, Closure $fail): void {
+        if (request()->file_csv->getClientOriginalExtension() != $this->extensionName) {
+            $fail($this->message());
+        }
     }
 
     /**

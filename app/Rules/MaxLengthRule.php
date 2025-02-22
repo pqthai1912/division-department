@@ -3,9 +3,10 @@
 namespace App\Rules;
 
 use App\Utils\MessagesUtil;
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 
-class MaxLengthRule implements Rule
+class MaxLengthRule implements ValidationRule
 {
     public $currNumber;
     public $maxNumber;
@@ -19,24 +20,25 @@ class MaxLengthRule implements Rule
      */
     public function __construct($maxNumber, $attribute)
     {
-        //
         $this->currNumber = 0;
         $this->maxNumber = $maxNumber;
         $this->attribute = $attribute;
     }
 
     /**
-     * Determine if the validation rule passes.
+     * Run the validation rule.
      *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
+     * @param string $attribute
+     * @param mixed $value
+     * @param Closure $fail
      */
-    public function passes($attribute, $value)
-    {
-        //
-        $this->currNumber = strlen($value);
-        return $this->currNumber <= $this->maxNumber;
+    public function validate(string $attribute, mixed $value, Closure $fail): void {
+        if (isset($value)) {
+            $this->currNumber = strlen($value);
+            if ($this->currNumber > $this->maxNumber) {
+                $fail($this->message());
+            }
+        }
     }
 
     /**
