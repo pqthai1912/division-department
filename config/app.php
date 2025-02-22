@@ -214,4 +214,17 @@ return [
         'UserConstant' => App\Constants\UserConstant::class,
     ])->toArray(),
 
+    // define title of screen from route
+    'routes_description' => [
+        'user.index' => 'User List',
+        'user.index.search' => 'User List',
+        'user.export' => 'User List',
+        'user.create' => 'User Add',
+        'user.store' => 'User Add',
+        'user.edit' => 'User Edit',
+        'user.update' => 'User Edit',
+        'user.destroy' => 'User Edit',
+        'division.index' => 'Division List',
+        'division.import' => 'Division List',
+    ],
 ];

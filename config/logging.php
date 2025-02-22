@@ -1,8 +1,17 @@
 <?php
 
+use App\Logging\CustomizeFormatter;
+use App\Logging\CustomLineFormatter;
+use App\Logging\CustomRangeHandler;
+use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\NullHandler;
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
+use Illuminate\Support\Facades\Log;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
+use Monolog\Processor\IntrospectionProcessor;
+use Illuminate\Log\Logger as ILogger;
 
 return [
 
@@ -53,8 +62,104 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['stderr', 'stdout', 'application_log', 'error_log'],
             'ignore_exceptions' => false,
+        ],
+        
+        'stdout' => [
+            'driver' => 'custom',
+            'via' => function () {
+                $streamHandler = new StreamHandler(
+                    env('APP_ENV') !== 'local'
+                        ? 'php://stderr' // if being run by php artisan serve, docker,...
+                        : storage_path('logs/cli-debug.log'), // if being run by wampp, xampp, laragon, virtual host,...
+                    'debug',
+                    false,
+                    null,
+                    true
+                );
+                
+                $streamHandler->setFormatter(new CustomLineFormatter());
+                $handler = new CustomRangeHandler(
+                    $streamHandler,
+                    'info', // min_level
+                    'warning'  // max_level
+                );
+
+                return new Logger('stderr', [$handler]);
+            },
+        ],
+
+        'stderr' => [
+            'driver' => 'custom',
+            'via' => function () {
+                $streamHandler = new StreamHandler(
+                    env('APP_ENV') !== 'local'
+                        ? 'php://stderr'
+                        : storage_path('logs/cli-error.log'),
+                    'debug',
+                    false,
+                    null,
+                    true
+                );
+                $streamHandler->setFormatter(new CustomLineFormatter());
+
+                $handler = new CustomRangeHandler(
+                    $streamHandler,
+                    'error', // min_level
+                    'emergency' // max_level
+                );
+
+                return new Logger('stderr', [$handler]);
+            },
+        ],
+
+        'application_log' => [
+            'driver' => 'custom',
+            'via' => function () {
+                $rotatingHandler = new RotatingFileHandler(
+                    storage_path('logs/application.log'), // log file path
+                    14,  // max files to keep
+                    'debug', // logging level
+                    true, // create if not exists
+                    null, // file permission (optional)
+                    true  // use lock file (optional)
+                );
+
+                $rotatingHandler->setFormatter(new CustomLineFormatter());
+
+                $handler = new CustomRangeHandler(
+                    $rotatingHandler,
+                    'info', // min_level
+                    'warning', // max_level
+                );
+
+                return new Logger('application_log', [$handler]);
+            },
+        ],
+
+        'error_log' => [
+            'driver' => 'custom',
+            'via' => function () {
+                $rotatingHandler = new RotatingFileHandler(
+                    storage_path('logs/error.log'), // log file path
+                    14,  // max files to keep
+                    'debug', // logging level
+                    true, // create if not exists
+                    null, // file permission (optional)
+                    true  // use lock file (optional)
+                );
+
+                $rotatingHandler->setFormatter(new CustomLineFormatter());
+
+                $handler = new CustomRangeHandler(
+                    $rotatingHandler,
+                    'error', // min_level
+                    'emergency', // max_level
+                );
+
+                return new Logger('error_log', [$handler]);
+            },
         ],
 
         'single' => [
@@ -89,16 +194,6 @@ return [
             ],
         ],
 
-        'stderr' => [
-            'driver' => 'monolog',
-            'level' => env('LOG_LEVEL', 'debug'),
-            'handler' => StreamHandler::class,
-            'formatter' => env('LOG_STDERR_FORMATTER'),
-            'with' => [
-                'stream' => 'php://stderr',
-            ],
-        ],
-
         'syslog' => [
             'driver' => 'syslog',
             'level' => env('LOG_LEVEL', 'debug'),
@@ -118,5 +213,4 @@ return [
             'path' => storage_path('logs/laravel.log'),
         ],
     ],
-
 ];

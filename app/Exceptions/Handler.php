@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Route;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -45,6 +47,14 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             //
+            $routeDescriptions = config('app.routes_description');
+            $currentRouteName = Route::currentRouteName();
+            // write log when render view
+            $screenName = $routeDescriptions[$currentRouteName] ?? '';
+            Log::error(json_encode($e->getMessage()), [
+                'screen' => $screenName,
+            ]);
+            abort(500);
         });
     }
 }

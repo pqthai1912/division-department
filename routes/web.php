@@ -27,7 +27,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/search', [UserController::class, 'indexSearch'])->name('user.index.search');
     Route::post('/search', [UserController::class, 'search'])->name('user.search');
     // export file
-    Route::get('/export', [UserController::class, 'exportCSV']);
+    Route::get('/export', [UserController::class, 'exportCSV'])->name('user.export');
 
     Route::group(['middleware' => 'clearSessionSearch'], function () {
         // user(some route) and admin
