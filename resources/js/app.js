@@ -11,3 +11,5 @@ import './users/index-user';
 import './users/add-user';
 
 import './users/edit-user';
+
+import './divisions/index-division';
